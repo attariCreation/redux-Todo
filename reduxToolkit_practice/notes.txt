@@ -1,0 +1,154 @@
+Redux Toolkit: Understanding the Core Concepts
+1️⃣ Key Concepts of Redux
+Redux primarily works with four main functions:
+
+Store → Manages the global state of the application.
+Reducers → Functions that define how the state should change based on actions.
+Actions → Objects that tell Redux what to do (contain a type and payload).
+Dispatch → Sends actions to reducers to update the state.
+useSelector
+2️⃣ Setting Up the Redux Store
+Step 1: Create a Store File
+Inside the app folder, create a file named store.js.
+The store acts like Context API’s global state but for Redux.
+Step 2: Configure the Store
+In store.js, set up the store using Redux Toolkit's configureStore():
+
+javascript
+Copy
+Edit
+import { configureStore } from "@reduxjs/toolkit";
+
+export const store = configureStore({
+    reducer: {}
+});
+🔹 Explanation:
+
+configureStore({}) creates the Redux store.
+Later, we will add reducers inside reducer: {}.
+3️⃣ Creating Reducers (Slices)
+Reducers in Redux Toolkit are called slices.
+
+Step 1: Organizing Features
+Inside the features/ folder, create a file for the slice.
+For a Todo App, name it todoSlice.js.
+Step 2: Define the Slice
+A slice consists of:
+
+Name (used internally in Redux).
+Initial state (default values for the store).
+Reducers (functions to handle state changes).
+Example of a Todo Slice
+javascript
+Copy
+Edit
+import { createSlice, nanoid } from "@reduxjs/toolkit";
+
+const initialState = {
+    todos: [{ id: 1, title: "Example todo" }]
+};
+
+export const todoSlice = createSlice({
+    name: "todo",
+    initialState,
+    reducers: {
+        addTodo: (state, action) => {
+            const todo = {
+                id: nanoid(),
+                title: action.payload
+            };
+            state.todos.push(todo);
+        },
+        removeTodo: (state, action) => {
+            state.todos = state.todos.filter(todo => todo.id !== action.payload);
+        }
+    }
+});
+🔹 Explanation:
+
+nanoid() generates a unique ID for each todo.
+addTodo: Adds a new todo with the title from action.payload.
+removeTodo: Filters out todos that do not match the given id.
+4️⃣ Understanding Actions and Payloads
+What is an Action?
+An action is a simple JavaScript object that tells Redux what happened.
+
+javascript
+Copy
+Edit
+{
+  type: "todo/addTodo",
+  payload: { text: "Learn Redux" }
+}
+What is a Payload?
+Payload is the actual data sent with an action.
+It informs reducers how to update the state.
+Example:
+javascript
+Copy
+Edit
+dispatch(addTodo({ text: "Learn Redux Toolkit" }));
+Here, the payload is { text: "Learn Redux Toolkit" }, so the reducer accesses it using action.payload.text.
+5️⃣ Removing a Todo (Filter Logic)
+The removeTodo function:
+
+javascript
+Copy
+Edit
+removeTodo: (state, action) => {
+    state.todos = state.todos.filter(todo => todo.id !== action.payload);
+}
+🔹 How It Works:
+
+state.todos contains all the todos.
+.filter() keeps only todos whose IDs do not match the one provided in action.payload.
+The matching todo is removed, and the state updates.
+6️⃣ Exporting Actions and Reducers
+Once the slice is created, export the necessary parts:
+
+Exporting Action Creators
+javascript
+Copy
+Edit
+export const { addTodo, removeTodo } = todoSlice.actions;
+🔹 This allows you to dispatch addTodo() and removeTodo() in components.
+
+Exporting the Reducer
+javascript
+Copy
+Edit
+export default todoSlice.reducer;
+🔹 This reducer will be added to store.js.
+
+7️⃣ Finalizing the Store (Connecting Reducers)
+Once the reducer is ready, connect it to the store:
+
+javascript
+Copy
+Edit
+import { configureStore } from "@reduxjs/toolkit";
+import todoReducer from "../features/todoSlice";
+
+export const store = configureStore({
+    reducer: {
+        todo: todoReducer
+    }
+});
+🔹 Now, store knows about our Todo slice.
+
+🎯 Summary
+Step	Description
+1. Create Store	Inside app/, create store.js and configure the store.
+2. Create Reducers (Slices)	Inside features/, create a slice (e.g., todoSlice.js).
+3. Define Actions & Reducers	Add addTodo and removeTodo functions.
+4. Understand Payloads	Payload is the data inside action.payload.
+5. Remove Items Correctly	Use .filter() to remove specific items from the state.
+6. Export and Connect Everything	Export actions and reducers, then connect to store.js.
+💡 Next Steps
+Connect Redux to a React component using useSelector() and useDispatch().
+Dispatch actions from a UI (e.g., a button click).
+
+
+
+
+after dispatch and selector, render by the same way we render the products by an api in an ecommerce app 
