@@ -1,28 +1,100 @@
-import React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { removeTodo as removeTodoApi, updateTodo } from "../api/todoApi";
+import { useState } from "react";
 
-import { addTodo, removeTodo } from "../redux/todoSlice";
+const Todo = ({ todos, resetPage }) => {
+  const [editingId, setEditingId] = useState(null);
+  const [editedData, setEditedData] = useState({});
+  const [errors, setErrors] = useState({}); // ✅ error state
 
-const Todo = () => {
-  const todos = useSelector((state) => state.todo.todos);  // Corrected selector
-  const dispatch = useDispatch();
+  const deleteTodo = async (id) => {
+    const response = await removeTodoApi(id);
+    if (!response) {
+      console.log("❌ Error with the response");
+    } else {
+      resetPage();
+    }
+  };
+
+  const handleBlur = async (todo) => {
+    const id = todo._id;
+    const newTitle = editedData[id]?.trim();
+
+    setEditingId(null);
+
+    // ✅ Check if empty
+    if (!newTitle) {
+      setErrors((prev) => ({
+        ...prev,
+        [id]: "❗ You must enter a value.",
+      }));
+      return;
+    }
+
+    setErrors((prev) => {
+      const newErrors = { ...prev };
+      delete newErrors[id];
+      return newErrors;
+    });
+
+    if (newTitle !== todo.title) {
+      await updateTodo({
+        title: newTitle,
+        completed: todo.completed,
+        _id: id,
+      });
+      resetPage();
+    }
+  };
+
+  const todoMap = () => {
+    return todos.map((todo) => {
+      const id = todo._id;
+      const isEditing = editingId === id;
+
+      return (
+        <div className="todo-item" key={id} style={{ marginBottom: "1rem" }}>
+          <input
+            readOnly={!isEditing}
+            onClick={() => setEditingId(id)}
+            onBlur={() => handleBlur(todo)}
+            value={isEditing ? editedData[id] ?? todo.title : todo.title}
+            onChange={(e) => {
+              setEditedData((prev) => ({
+                ...prev,
+                [id]: e.target.value,
+              }));
+              setErrors((prev) => {
+                const newErrors = { ...prev };
+                delete newErrors[id]; // Clear error on typing
+                return newErrors;
+              });
+            }}
+            className="todo-title"
+          />
+          {errors[id] && (
+            <div style={{ color: "red", fontSize: "0.85rem", marginTop: "4px" }}>
+              {errors[id]}
+            </div>
+          )}
+          <button
+            className="delete-btn"
+            onClick={async () => {
+              await deleteTodo(id);
+            }}
+          >
+            Delete
+          </button>
+        </div>
+      );
+    });
+  };
 
   return (
-    <div className="flex justify-center items-center flex-col gap-4">
-      <h2 className="text-2xl"> Todos list here !</h2>
-      {todos.map((todo) => {
-        return (
-          <div key={todo.id}>
-            title: {todo.title}  {/* Corrected the property name from 'text' to 'title' */}
-            <button
-              className="text-red-500 cursor-pointer hover:text-red-700 hover:border-2 hover:border-red-600 transition-all duration-75 delay-100 px-5 py-2"
-              onClick={() => dispatch(removeTodo(todo.id))}
-            >
-              Delete
-            </button>
-          </div>
-        );
-      })}
+    <div className="todo-list">
+      <h2 style={{ textAlign: "center", marginBottom: 12 }}>
+        Todos list here!
+      </h2>
+      {todos && todos.length > 0 ? todoMap() : <div>Sorry, no todos found.</div>}
     </div>
   );
 };

@@ -1,22 +1,26 @@
 Redux Toolkit: Understanding the Core Concepts
 1️⃣ Key Concepts of Redux
+
 Redux primarily works with four main functions:
 
 Store → Manages the global state of the application.
+
 Reducers → Functions that define how the state should change based on actions.
 Actions → Objects that tell Redux what to do (contain a type and payload).
 Dispatch → Sends actions to reducers to update the state.
-useSelector
+useSelector 
+
 2️⃣ Setting Up the Redux Store
+
 Step 1: Create a Store File
+
 Inside the app folder, create a file named store.js.
 The store acts like Context API’s global state but for Redux.
+
 Step 2: Configure the Store
+
 In store.js, set up the store using Redux Toolkit's configureStore():
 
-javascript
-Copy
-Edit
 import { configureStore } from "@reduxjs/toolkit";
 
 export const store = configureStore({
@@ -78,15 +82,14 @@ Copy
 Edit
 {
   type: "todo/addTodo",
-  payload: { text: "Learn Redux" }
+  payload: "ghello "
 }
 What is a Payload?
 Payload is the actual data sent with an action.
 It informs reducers how to update the state.
 Example:
-javascript
-Copy
-Edit
+
+
 dispatch(addTodo({ text: "Learn Redux Toolkit" }));
 Here, the payload is { text: "Learn Redux Toolkit" }, so the reducer accesses it using action.payload.text.
 5️⃣ Removing a Todo (Filter Logic)

@@ -1,38 +1,37 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addTodo } from "../redux/todoSlice";
+import { createTodo } from "../api/todoApi";
 
-const AddTodo = () => {
-  const [input, setInput] = useState("");  // Initialize with an empty string
+const AddTodo = ({resetPage}) => {
+
+  const [input, setInput] = useState("");
+  
   const dispatch = useDispatch();
 
-  const addTodoHandler = (e) => {
+  const addTodoHandler = async (e) => {
     e.preventDefault();
     
-      dispatch(addTodo({text:input } ));
-      console.log(input)
-      setInput("");  // Clear the input after dispatching
-    
+    const data = await createTodo({title: input, completed: "true"})
+    dispatch(addTodo(data));
+    resetPage()
+    setInput("");
   };
 
   return (
-    <>
-      <div className="flex justify-center items-center my-10">
-        <input
-          value={input}
-          onChange={(e) => { setInput(e.target.value) ; console.log(e.target.value)} }
-          className="border-2 border-zinc-300 px-7 py-3 mx-10 rounded-md focus:outline-none focus:ring-2 focus:ring-zinc-500"
-          type="text"
-          placeholder="Enter the name"
-        />
-        <button
-          onClick={addTodoHandler}
-          className="px-7 py-3 bg-zinc-900 font-bold text-white hover:bg-transparent hover:border-2 hover:border-zinc-900 transition-all duration-200 hover:text-zinc-900 rounded-md"
-        >
-          Add
-        </button>
-      </div>
-    </>
+    <form className="add-todo-form" onSubmit={addTodoHandler}>
+      <input
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        className="add-todo-input"
+        type="text"
+        placeholder="Enter the name"
+      />
+      
+      <button type="submit" className="add-todo-btn">
+        Add
+      </button>
+    </form>
   );
 };
 
