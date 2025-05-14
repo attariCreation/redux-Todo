@@ -1,46 +1,40 @@
 import { TextField, Button, Typography, Box, Link, Paper } from '@mui/material';
-
 import { useState } from 'react';
-
 import { createUser } from '../api/authApi';
-
 import { useDispatch } from 'react-redux';
-
 import { useNavigate } from 'react-router-dom';
-
 import { loginUser as loginUserRedux } from '../redux/userSlice';
 
 const Signup = () => {
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [userData, setUserData] = useState({name: "", email: "", password: ""})
+  const [userData, setUserData] = useState({ name: "", email: "", password: "" });
 
   const signUpUser = async (e) => {
-
     e.preventDefault();
 
     try {
-
       const response = await createUser(userData);
 
-      if (!response || !response.data.token) {
-          alert("Please enter a valid username or password");
-          return;
+      if (!response || !response.data || !response.data.token || !response.data._id) {
+        alert("Please enter a valid name, email, or password.");
+        return;
       }
 
+      dispatch(loginUserRedux({
+        userName: response.data.user.name,
+        token: response.data.token,
+        userId: response.data._id
+      }));
 
+      console.log("User ID from Signup component:", response.data._id);
 
-      dispatch(loginUserRedux({userName: userData.name, token: response.data.token}))
-
-
-      navigate("/");
-
-  } catch (error) {
-      console.error("sign up failed:", error);
+      navigate("/"); // ✅ or navigate("/dashboard") if you have one
+    } catch (error) {
+      console.error("Signup failed:", error);
       alert("Something went wrong. Please try again later.");
-  }
-  }
+    }
+  };
 
   return (
     <Box
@@ -55,51 +49,44 @@ const Signup = () => {
           Create Account
         </Typography>
 
-       <form onSubmit={signUpUser} > 
-         <TextField
-          fullWidth
-          label="Name"
-          value={userData.name}
-          onChange={(e) => {
-            setUserData((prev) => ({ ...prev, name: e.target.value }))
-          }}
-          variant="outlined"
-          margin="normal"
-        />
-        <TextField
-          fullWidth
-          label="Email"
-          variant="outlined"
-          margin="normal"
-          type="email"
-          value={userData.email}
-          onChange={(e) => {
-            setUserData((prev) => ({ ...prev, email: e.target.value }))
-          }}
-        />
-        <TextField
-          fullWidth
-          label="Password"
-          variant="outlined"
-          margin="normal"
-          type="password"
-          value={userData.password}
-          onChange={(e) => {
-            setUserData((prev) => ({ ...prev, password: e.target.value }))
-          }}
-        />
+        <form onSubmit={signUpUser}>
+          <TextField
+            fullWidth
+            label="Name"
+            value={userData.name}
+            onChange={(e) => setUserData((prev) => ({ ...prev, name: e.target.value }))}
+            variant="outlined"
+            margin="normal"
+          />
+          <TextField
+            fullWidth
+            label="Email"
+            variant="outlined"
+            margin="normal"
+            type="email"
+            value={userData.email}
+            onChange={(e) => setUserData((prev) => ({ ...prev, email: e.target.value }))}
+          />
+          <TextField
+            fullWidth
+            label="Password"
+            variant="outlined"
+            margin="normal"
+            type="password"
+            value={userData.password}
+            onChange={(e) => setUserData((prev) => ({ ...prev, password: e.target.value }))}
+          />
 
-        <Button
-          fullWidth
-          variant="contained"
-          color="primary"
-          sx={{ mt: 2, mb: 2 }}
-          type='submit'
-          
-        >
-          Sign Up
-        </Button>
-       </form>
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            sx={{ mt: 2, mb: 2 }}
+            type="submit"
+          >
+            Sign Up
+          </Button>
+        </form>
 
         <Typography variant="body2" align="center">
           Already have an account?{' '}

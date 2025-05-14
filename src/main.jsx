@@ -1,24 +1,37 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import { store } from "./redux/store.js";
 import Login from "./pages/login.jsx";
 import Signup from "./pages/SignUp.jsx";
-import "./index.css";
 import App from "./App.jsx";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import './index.css';
+import Header from "./components/Header.jsx"
+
+const AppRoutes = () => {
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+
+  return (
+    <Routes>
+      <Route path="/" element={isLoggedIn ?
+       <>
+        <Header />
+         <App /> 
+         </>
+         : <Navigate to="/login" />} />
+      <Route path="/login" element={!isLoggedIn ? <Login /> : <Navigate to="/" />} />
+      <Route path="/signup" element={!isLoggedIn ? <Signup /> : <Navigate to="/" />} />
+    </Routes>
+  );
+};
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <Router> 
-    <Provider store={store}>
-      <Routes> 
-      <Route path="/" element={<App />} />
-      <Route path="/login"  element={ <Login/> }/>
-      <Route path="/signup" element={<Signup />} />
-    
-      </Routes>
-    </Provider>
+    <Router>
+      <Provider store={store}>
+        <AppRoutes />
+      </Provider>
     </Router>
   </StrictMode>
 );

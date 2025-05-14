@@ -4,6 +4,7 @@ import axiosInstance from "../utils/axiosinterceptor"
     const response = await axiosInstance.post("http://localhost:3001/todo/createTodo", todoData )
     return response.data
 }
+
  const getAllTodos = async () => {
     const response = await axiosInstance.get("http://localhost:3001/todo/getAllTodos")
     return response.data

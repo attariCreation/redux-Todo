@@ -24,15 +24,17 @@ const Login = () => {
                 alert("Please enter a valid username or password");
                 return;
             }
+
             console.log(response);
 
 
-            dispatch(loginUserRedux({userName: response.existingUser.name, token: response.token}))
+            dispatch(loginUserRedux({userName: response.existingUser.name, token: response.token, userId: response.existingUser._id}))
 
+              // console.log("token that is saved in the redux store: " , response.token)
             navigate("/");
         } catch (error) {
             console.error("Login failed:", error);
-            alert("Something went wrong. Please try again later.");
+            alert("please enter correct username or password");
         }
     };
     

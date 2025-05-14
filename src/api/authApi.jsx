@@ -8,7 +8,7 @@ const loginUser = async (userData) => {
 const createUser = async (userData) => {
    const response = await axios.post("http://localhost:3001/auth/sign-up", userData)
 
-   console.log("create user api test", response, response.data)
+   console.log("create user api test", response.data)
 
    return response.data
 }
