@@ -16,10 +16,6 @@ const Signup = () => {
     try {
       const response = await createUser(userData);
 
-      if (!response || !response.data || !response.data.token || !response.data._id) {
-        alert("Please enter a valid name, email, or password.");
-        return;
-      }
 
       dispatch(loginUserRedux({
         userName: response.data.user.name,

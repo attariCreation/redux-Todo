@@ -8,6 +8,7 @@ const AddTodo = ({resetPage}) => {
   const dispatch = useDispatch();
 
   const addTodoHandler = async (e) => {
+
     e.preventDefault();
 
     try{
@@ -17,7 +18,7 @@ const AddTodo = ({resetPage}) => {
       setInput("");
     }
     catch(e){
-      alert("please enter the required data ")
+      alert("please enter the required data " + e)
     }
   };
 

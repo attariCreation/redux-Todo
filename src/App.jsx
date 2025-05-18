@@ -6,6 +6,7 @@ const App = () => {
   const [todos, setTodos] = useState([])
 
   const fetchTodos = async () => {
+    
     const data = await getAllTodos({userId: localStorage.getItem("userId")});
     console.log(data)
     console.log("logging to check userid from backend response", data.userId)
