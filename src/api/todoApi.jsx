@@ -1,5 +1,5 @@
 import axiosInstance from "../utils/axiosinterceptor"
-const render = import.meta.env.VITE_RENDER_SERVICE_PATH
+const render =  "https://todo-backend-8b06.onrender.com"
 
  const createTodo = async (todoData) => {
     const response = await axiosInstance.post(`${render}/todo/createTodo`, todoData )

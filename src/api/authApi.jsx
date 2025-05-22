@@ -1,10 +1,12 @@
 import axios from "axios";
 
-const render = import.meta.env.VITE_RENDER_SERVICE_PATH
+const render = "https://todo-backend-8b06.onrender.com"
 
 const loginUser = async (userData) => {
 
    const response = await axios.post(`${render}/auth/login`, userData)
+
+   
    console.log(response.data)
    return response.data
 }
