@@ -12,7 +12,7 @@ const render =  "https://todo-backend-8b06.onrender.com"
 }
 const removeTodo = async (todoId) => {
     console.log("API call to delete Todo with ID:", todoId); 
-    const response = await axiosInstance.delete(`${render}/deleteTodo/${todoId}`)
+    const response = await axiosInstance.delete(`${render}/todo/deleteTodo/${todoId}`)
     return  response.data
 }
 const updateTodo = async (todoData) => {

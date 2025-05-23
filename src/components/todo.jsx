@@ -10,6 +10,8 @@ const Todo = ({ todos, resetPage }) => {
 
   const deleteTodo = async (id) => {
     const response = await removeTodoApi(id);
+
+    console.log(id)
     if (!response) {
       console.log("❌ Error with the response");
     } else {
@@ -47,6 +49,7 @@ const Todo = ({ todos, resetPage }) => {
         completed: todo.completed,
         _id: id,
       });
+
       resetPage();
     }
   };
