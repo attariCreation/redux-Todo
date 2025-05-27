@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import {loginUser as loginUserRedux} from "../redux/userSlice"
 import Loader from "../components/Loader"
 import { useDispatch } from 'react-redux';
+import { useSnackbar } from 'notistack'
 
 const Login = () => {
 
@@ -14,7 +15,8 @@ const Login = () => {
 
     const [loading, setLoading ] = useState(false)
 
-    
+    const { enqueueSnackbar } = useSnackbar()
+
     const loginUser = async (e) => {
 
         e.preventDefault();
@@ -40,7 +42,7 @@ const Login = () => {
             navigate("/");
         } catch (error) {
             console.error("Login failed:", error);
-            alert("please enter correct username or password");
+            enqueueSnackbar('please enter correct username or password', { variant: 'error' });
         }
         finally{
           setLoading(false)
@@ -105,7 +107,7 @@ const Login = () => {
        <Typography variant="body2" align="center">
          Don’t have an account?{' '}
          <Link href="/signup" underline="hover">
-           Sign Up
+           Sign Up  
          </Link>
        </Typography>
      </Paper>

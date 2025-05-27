@@ -2,10 +2,14 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addTodo } from "../redux/todoSlice";
 import { createTodo } from "../api/todoApi";
+import { useSnackbar } from 'notistack'
 
 const AddTodo = ({resetPage}) => {
   const [input, setInput] = useState("");
+
   const dispatch = useDispatch();
+
+  const { enqueueSnackbar } = useSnackbar()
 
   const addTodoHandler = async (e) => {
 
@@ -19,6 +23,8 @@ const AddTodo = ({resetPage}) => {
     }
     catch(e){
       alert("please enter the required data " + e)
+    }finally{
+      enqueueSnackbar("added your data successfully", {variant: 'success'})
     }
   };
 

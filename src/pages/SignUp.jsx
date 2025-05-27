@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { loginUser as loginUserRedux } from "../redux/userSlice";
 import Loader from "../components/Loader";
+import { useSnackbar } from 'notistack'
 const Signup = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -14,6 +15,8 @@ const Signup = () => {
     email: "",
     password: "",
   });
+
+  const { enqueueSnackbar } = useSnackbar()
 
   const signUpUser = async (e) => {
     e.preventDefault();
@@ -38,8 +41,7 @@ const Signup = () => {
       navigate("/"); // ✅ or navigate("/dashboard") if you have one
     } catch (error) {
       console.error("Signup failed:", error.response.data.message);
-      alert("Signup failed:" + error.response.data.message);
-      alert("Something went wrong. Please try again later.");
+      enqueueSnackbar(`Signup failed: ${ error.response.data.message} `, {variant: 'warning'});
     } finally {
       setLoading(false);
     }

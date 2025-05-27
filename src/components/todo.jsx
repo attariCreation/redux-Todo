@@ -1,29 +1,47 @@
 import { removeTodo as removeTodoApi, updateTodo } from "../api/todoApi";
 import { useEffect, useState } from "react";
-
+import { useSnackbar } from 'notistack'
+import Loader from "./Loader";
 const Todo = ({ todos, resetPage }) => {
+
+
   const [editingId, setEditingId] = useState(null);
   const [editedData, setEditedData] = useState({});
   const [errors, setErrors] = useState({});
 
-  const token = localStorage.getItem("token");
+    const [loading, setLoading ] = useState(false)
+
+  const { enqueueSnackbar } = useSnackbar()
+
+  // const token = localStorage.getItem("token");
 
   const deleteTodo = async (id) => {
+
+   try{
+    
+
     const response = await removeTodoApi(id);
+
+    enqueueSnackbar('successfully removed Todo', {variant: 'info'})
 
     console.log(id)
     if (!response) {
       console.log("❌ Error with the response");
-    } else {
-      resetPage();
     }
+
+   }catch(err) {
+    enqueueSnackbar(err)
+   }finally{
+    resetPage()
+   }
+
   };
 
-  useEffect(() => {
-    resetPage()   
-  }, [token])
+
 
   const handleBlur = async (todo) => {
+
+
     const id = todo._id;
     const newTitle = editedData[id]?.trim();
 
@@ -117,15 +135,21 @@ const Todo = ({ todos, resetPage }) => {
       <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-blue-500">
         Your Tasks
       </h2>
-      {todos && todos.length > 0 ? todoMap() : (
-        <div className="text-gray-500 text-center py-12 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl border border-blue-100 shadow-md">
-          <svg className="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-          </svg>
-          <p className="text-lg font-medium">Your task list is empty</p>
-          <p className="text-sm text-gray-400 mt-1">Add a new task to get started</p>
-        </div>
-      )}
+      {loading ? (
+      <div className="flex justify-center items-center py-20">
+        <Loader />
+      </div>
+    ) : todos && todos.length > 0 ? (
+      todoMap()
+    ) : (
+      <div className="text-gray-500 text-center py-12 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl border border-blue-100 shadow-md">
+        <svg className="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        </svg>
+        <p className="text-lg font-medium">Your task list is empty</p>
+        <p className="text-sm text-gray-400 mt-1">Add a new task to get started</p>
+      </div>
+    )}
     </div>
   );
 };
