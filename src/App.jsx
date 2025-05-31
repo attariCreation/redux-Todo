@@ -8,6 +8,7 @@ const App = () => {
   const[loading, setLoading ] = useState(false)
 
 
+  useEffect
   const fetchTodos = async () => {
 
    try{
@@ -16,7 +17,6 @@ const App = () => {
     console.log(data)
     console.log("logging to check userid from backend response", data.userId)
     setTodos(data.data)
-    
    }catch(err) {
     alert(err)
    }finally{
@@ -28,6 +28,7 @@ const App = () => {
     fetchTodos()
 
   }, [])
+  useEffect(() => {}, [])
 
   return (
     <>
